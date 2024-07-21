@@ -74,4 +74,9 @@ ghcommit_args+=("${deletes[@]/#/--delete=}")
 
 [[ -n "${DEBUG:-}" ]] && echo "ghcommit args: '${ghcommit_args[*]}'"
 
-ghcommit "${ghcommit_args[@]}"
+output=$(ghcommit "${ghcommit_args[@]}")
+
+commit_url=$(echo "$output" | grep "Success. New commit:" | awk '{print $NF}')
+commit_hash=$(echo "$commit_url" | awk -F '/' '{print $NF}')
+echo "commit-url=$commit_url" >> "$GITHUB_OUTPUT"
+echo "commit-hash=$commit_hash" >> "$GITHUB_OUTPUT"
